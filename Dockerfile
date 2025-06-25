@@ -3,6 +3,8 @@ FROM debian:12-slim
 LABEL maintainer="Federico A. Corazza <git@facorazza.com>"
 LABEL description="Network troubleshooting toolkit for Kubernetes and Docker environments"
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         aria2 \
