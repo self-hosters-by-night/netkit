@@ -1,2 +1,4 @@
-.git
+.git*
+k8s
+
 *.md
