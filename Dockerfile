@@ -29,12 +29,15 @@ RUN apt-get update && \
         less \
         location \
         lsof \
+        mosquitto-clients \
         mtr-tiny \
         nano \
         net-tools \
+        netcat-openbsd \
+        netstress \
         ngrep \
         nmap \
-        netcat-openbsd \
+        nfs-common \
         openssh-client \
         screen \
         socat \
@@ -52,7 +55,7 @@ RUN apt-get update && \
         whois \
         wrk \
         yq \
-        zip \    
+        zip \
         && \
     rm -rf /var/lib/apt/lists/*
 
