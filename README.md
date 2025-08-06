@@ -22,10 +22,16 @@ docker run -it --rm --net=host --privileged ghcr.io/self-hosters-by-night/netkit
 kubectl run netkit -it --rm --restart=Never --image=ghcr.io/self-hosters-by-night/netkit:latest --namespace=default
 ```
 
+#### Deploy Pod
+
+```bash
+kubectl apply -f k8s/pod.yaml
+```
+
 #### Access the Pod
 
 ```bash
-kubectl exec -it ghcr.io/self-hosters-by-night/netkit:latest -- bash
+kubectl exec -it netkit -- bash
 ```
 
 ## Building from Source
@@ -36,7 +42,7 @@ cd netkit
 docker build -t ghcr.io/self-hosters-by-night/netkit:latest .
 ```
 
-## Included Commands
+## Included Tools
 
 ### Network Analysis & Monitoring
 
@@ -64,6 +70,7 @@ docker build -t ghcr.io/self-hosters-by-night/netkit:latest .
 - **wrk** - HTTP benchmarking tool
 - **netcat-openbsd** - Network connection utility for reading/writing data
 - **socat** - Multipurpose relay tool for bidirectional data transfer
+- **netstress** - Network stress testing tool
 
 ### IP & Network Calculation
 
@@ -83,6 +90,7 @@ docker build -t ghcr.io/self-hosters-by-night/netkit:latest .
 - **openssh-client** - SSH client for secure remote connections
 - **telnet** - Basic network protocol client
 - **whois** - Query domain registration information
+- **mosquitto-clients** - MQTT client tools (mosquitto_pub, mosquitto_sub)
 
 ### System Monitoring
 
@@ -90,7 +98,7 @@ docker build -t ghcr.io/self-hosters-by-night/netkit:latest .
 - **lsof** - List open files and network connections
 - **sysstat** - System performance monitoring tools
 
-### LDAP & Directory Services
+### Directory Services
 
 - **ldap-utils** - LDAP client utilities for directory operations
 
@@ -99,6 +107,7 @@ docker build -t ghcr.io/self-hosters-by-night/netkit:latest .
 - **aria2** - Multi-protocol download utility
 - **wget** - Non-interactive network downloader
 - **unzip/zip** - Archive compression/decompression tools
+- **nfs-common** - NFS client utilities
 
 ### Text Processing & Development
 
@@ -118,11 +127,12 @@ docker build -t ghcr.io/self-hosters-by-night/netkit:latest .
 - **kubectl** - Kubernetes command-line tool
 - **location** - IP geolocation lookup tool
 
-### Security Features
+## Security Features
 
 - Non-root user `netkit` with sudo access to privileged network tools
 - Minimal attack surface with slim Debian base
-- Pre-configured kubectl aliases for faster Kubernetes operations
+- Kubernetes pod runs with restricted security context
+- Only essential network capabilities (NET_RAW, NET_ADMIN) when needed
 
 ## Common Use Cases
 
@@ -131,6 +141,8 @@ docker build -t ghcr.io/self-hosters-by-night/netkit:latest .
 ```bash
 # Test DNS resolution
 dig google.com
+nslookup kubernetes.default.svc.cluster.local
+host _https._tcp.kubernetes.default.svc.cluster.local
 ```
 
 ### Network Connectivity
@@ -150,22 +162,42 @@ nmap -p 80,443 google.com
 ```bash
 # Network performance (requires iperf3 server)
 iperf3 -c <server-ip>
+
+# HTTP benchmarking
+wrk -t12 -c400 -d30s http://example.com/
 ```
 
 ### Packet Analysis
 
 ```bash
 # Capture packets
-tcpdump -i any -n host 8.8.8.8
+sudo tcpdump -i any -n host 8.8.8.8
 
 # With tshark
-tshark -i any -n -f "host 8.8.8.8"
+sudo tshark -i any -n -f "host 8.8.8.8"
+
+# Network grep
+sudo ngrep -d any "GET" tcp port 80
 ```
 
 ### Service Discovery
 
 ```bash
+# Kubernetes service discovery
 dig SRV _https._tcp.kubernetes.default.svc.cluster.local
+
+# LDAP queries
+ldapsearch -x -H ldap://ldap.example.com -b "dc=example,dc=com"
+```
+
+### MQTT Testing
+
+```bash
+# Subscribe to MQTT topic
+mosquitto_sub -h mqtt.example.com -t "sensor/temperature"
+
+# Publish MQTT message
+mosquitto_pub -h mqtt.example.com -t "sensor/temperature" -m "23.5"
 ```
 
 ## Contributing
