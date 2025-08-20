@@ -1,4 +1,4 @@
-FROM debian:12-slim
+FROM debian:13-slim
 
 LABEL maintainer="Federico A. Corazza <git@facorazza.com>"
 LABEL description="Network troubleshooting toolkit for Kubernetes and Docker environments"
