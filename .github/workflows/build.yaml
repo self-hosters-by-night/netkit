@@ -3,6 +3,8 @@ on:
   push:
     branches: [ main ]
     tags: [ 'v*' ]
+  schedule:
+    - cron: '0 2 * * 0' 
 
 env:
   REGISTRY: ghcr.io
