@@ -72,8 +72,6 @@ RUN ETCD_VER=v3.6.7 && \
     mv /tmp/etcd/etcd /usr/local/bin && \
     mv /tmp/etcd/etcdctl /usr/local/bin && \
     mv /tmp/etcd/etcdutl /usr/local/bin
-RUN etcdctl version
-RUN etcdutl version
 
 # Install kubectl
 RUN KUBECTL_VERSION="$(curl -L -s https://dl.k8s.io/release/stable.txt)" && \
