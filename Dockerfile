@@ -31,6 +31,7 @@ RUN apt-get update && \
         lsof \
         mosquitto-clients \
         mtr-tiny \
+        mysql-client \
         nano \
         net-tools \
         netcat-openbsd \
@@ -39,6 +40,7 @@ RUN apt-get update && \
         nmap \
         nfs-common \
         openssh-client \
+        postgresql-client \
         screen \
         socat \
         sysstat \
@@ -59,9 +61,34 @@ RUN apt-get update && \
         && \
     rm -rf /var/lib/apt/lists/*
 
-RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+# Install etcd
+RUN ETCD_VER=v3.6.7 & \
+    DOWNLOAD_URL=https://storage.googleapis.com/etcd && \
+    curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz && \
+    tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/etcd-download-test --strip-components=1 --no-same-owner && \
+    rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
+RUN /tmp/etcd-download-test/etcdctl version
+RUN /tmp/etcd-download-test/etcdutl version
+
+# Install kubectl
+RUN KUBECTL_VERSION="$(curl -L -s https://dl.k8s.io/release/stable.txt)" && \
+    curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && \
+    curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl.sha256" && \
+    echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check && \
+    rm kubectl.sha256 && \
     chmod +x kubectl && \
-    mv kubectl /usr/local/bin/
+    mv kubectl /usr/local/bin/kubectl
+RUN kubectl version --client
+
+# Install MongoDB shell
+RUN curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
+    gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
+RUN echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/debian bookworm/mongodb-org/8.0 main" | tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+RUN apt-get update && \
+    apt-get install -y \
+    mongodb-mongosh && \
+    rm -rf /var/lib/apt/lists/*
+RUN mongosh --version
 
 RUN useradd -m -s /bin/bash netkit && \
     echo "netkit ALL=(ALL) NOPASSWD: /usr/bin/arping, /usr/bin/bmon, /usr/sbin/ethtool, /usr/bin/iftop, /usr/bin/iotop, /bin/ip, /usr/bin/nmap, /bin/nsenter, /usr/bin/socat, /usr/sbin/ss, /usr/bin/tcpdump, /usr/bin/tshark" >> /etc/sudoers
