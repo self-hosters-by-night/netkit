@@ -14,6 +14,7 @@ RUN apt-get update && \
         curl \
         dnsutils \
         ethtool \
+        gnupg \
         htop \
         httpie \
         iftop \
