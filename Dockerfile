@@ -31,7 +31,7 @@ RUN apt-get update && \
         lsof \
         mosquitto-clients \
         mtr-tiny \
-        mysql-client \
+        mariadb-client-compat \
         nano \
         net-tools \
         netcat-openbsd \
