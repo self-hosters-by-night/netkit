@@ -66,9 +66,9 @@ RUN ETCD_VER=v3.6.7 && \
     DOWNLOAD_URL=https://storage.googleapis.com/etcd && \
     curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz && \
     tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/etcd-download-test --strip-components=1 --no-same-owner && \
-    rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
-    mv /tmp/etcd-download-test/etcd /usr/local/bin
-    mv /tmp/etcd-download-test/etcdctl /usr/local/bin
+    rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz && \
+    mv /tmp/etcd-download-test/etcd /usr/local/bin && \
+    mv /tmp/etcd-download-test/etcdctl /usr/local/bin && \
     mv /tmp/etcd-download-test/etcdutl /usr/local/bin
 RUN etcdctl version
 RUN etcdutl version
