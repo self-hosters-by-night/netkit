@@ -62,7 +62,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install etcd
-RUN ETCD_VER=v3.6.7 & \
+RUN ETCD_VER=v3.6.7 && \
     DOWNLOAD_URL=https://storage.googleapis.com/etcd && \
     curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz && \
     tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/etcd-download-test --strip-components=1 --no-same-owner && \
