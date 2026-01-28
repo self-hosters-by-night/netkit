@@ -63,20 +63,22 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install etcd
-RUN ETCD_VER=v3.6.7 && \
+RUN ARCH="$(dpkg --print-architecture)" && \
+    ETCD_VER=v3.6.7 && \
     DOWNLOAD_URL=https://storage.googleapis.com/etcd && \
-    curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz && \
+    curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-${ARCH}.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-${ARCH}.tar.gz && \
     mkdir -p /tmp/etcd && \
-    tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/etcd --strip-components=1 --no-same-owner && \
-    rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz && \
+    tar xzvf /tmp/etcd-${ETCD_VER}-linux-${ARCH}.tar.gz -C /tmp/etcd --strip-components=1 --no-same-owner && \
+    rm -f /tmp/etcd-${ETCD_VER}-linux-${ARCH}.tar.gz && \
     mv /tmp/etcd/etcd /usr/local/bin && \
     mv /tmp/etcd/etcdctl /usr/local/bin && \
     mv /tmp/etcd/etcdutl /usr/local/bin
 
 # Install kubectl
-RUN KUBECTL_VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt) && \
-    curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && \
-    curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl.sha256" && \
+RUN ARCH="$(dpkg --print-architecture)" && \
+    KUBECTL_VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt) && \
+    curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${ARCH}/kubectl" && \
+    curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${ARCH}/kubectl.sha256" && \
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check && \
     rm kubectl.sha256 && \
     chmod +x kubectl && \
