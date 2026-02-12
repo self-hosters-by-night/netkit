@@ -15,6 +15,8 @@ RUN apt-get update && \
         dnsutils \
         ethtool \
         gnupg \
+        # Required by AWS CLI
+        groff \
         htop \
         httpie \
         iftop \
@@ -74,13 +76,13 @@ RUN ARCH="$(dpkg --print-architecture)" && \
     mv /tmp/etcd/etcdctl /usr/local/bin && \
     mv /tmp/etcd/etcdutl /usr/local/bin
 
-# Install AWS cli
+# Install AWS CLI
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
     unzip awscliv2.zip && \
     ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update && \
     rm -r awscliv2.zip aws
 
-# Install kubectl
+# Install Kubectl
 RUN ARCH="$(dpkg --print-architecture)" && \
     KUBECTL_VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt) && \
     curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${ARCH}/kubectl" && \
